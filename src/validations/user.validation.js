@@ -9,6 +9,12 @@ const createUser = {
     role: Joi.string().required().valid('user', 'admin'),
   }),
 };
+const login = {
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().custom(password)
+}),
+};
 
 const getUsers = {
   query: Joi.object().keys({
@@ -47,6 +53,7 @@ const deleteUser = {
 
 module.exports = {
   createUser,
+  login,
   getUsers,
   getUser,
   updateUser,

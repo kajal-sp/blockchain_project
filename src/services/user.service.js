@@ -9,24 +9,24 @@ const { AuditLogBlockchain } = require('../auditLogs/userChain');
  * @returns {Promise<User>}
  */
 const createUser = async (userBody) => {
-  // if (await User.isEmailTaken(userBody.email)) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  // }
-  const blockChain = new AuditLogBlockchain();
-  await blockChain.initialize();
-  // eslint-disable-next-line no-plusplus
-  // for (let idx = 1; idx <= 10; idx++) {
-    const payload = userBody
-    //logger.info(`New Block Request: ${payload.ref_id}`);
-    // eslint-disable-next-line no-await-in-loop
-    const entry = await blockChain.createTransaction(payload);
-    //logger.info(`New Transaction: ${entry.id}`);
-  // }
+  if (await User.isEmailTaken(userBody.email)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  }
+  // const blockChain = new AuditLogBlockchain();
+  // await blockChain.initialize();
+  // // eslint-disable-next-line no-plusplus
+  // // for (let idx = 1; idx <= 10; idx++) {
+  //   const payload = userBody
+  //   //logger.info(`New Block Request: ${payload.ref_id}`);
+  //   // eslint-disable-next-line no-await-in-loop
+  //   const entry = await blockChain.createTransaction(payload);
+  //   //logger.info(`New Transaction: ${entry.id}`);
+  // // }
 
-  const status = await blockChain.checkChainValidity();
-  //logger.info(`Chain Status: ${status ? 'SUCCESS' : 'FAILED'}`);
-  process.exit(0);
-  //return User.create(userBody);
+  // const status = await blockChain.checkChainValidity();
+  // //logger.info(`Chain Status: ${status ? 'SUCCESS' : 'FAILED'}`);
+  // process.exit(0);
+  return User.create(userBody);
 };
 
 /**

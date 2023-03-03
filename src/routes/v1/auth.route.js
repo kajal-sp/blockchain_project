@@ -12,6 +12,7 @@ router.post('/logout', validate(authValidation.logout), authController.logout);
 router.post('/refresh-tokens', validate(authValidation.refreshTokens), authController.refreshTokens);
 router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword);
 router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
+router.put('/change-password', validate(authValidation.changePassword), authController.changePassword);
 router.post('/send-verification-email', auth(), authController.sendVerificationEmail);
 router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
 
@@ -233,6 +234,55 @@ module.exports = router;
  *                 description: At least one number and one letter
  *             example:
  *               password: password1
+ *     responses:
+ *       "204":
+ *         description: No content
+ *       "401":
+ *         description: Password reset failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               code: 401
+ *               message: Password reset failed
+ */
+
+/**
+ * @swagger
+ * /auth/change-password:
+ *   put:
+ *     summary: Reset password
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The reset password token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               old_password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 8
+ *                 description: At least one number and one letter
+ *               new_password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 8
+ *                 description: At least one number and one letter
+ *             example:
+ *               old_password: password1
+ *               new_password: password2
  *     responses:
  *       "204":
  *         description: No content

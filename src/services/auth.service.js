@@ -4,6 +4,7 @@ const userService = require('./user.service');
 const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
+const { genSaltSync, hashSync, compareSync } = require('bcrypt');
 
 /**
  * Login with username and password
@@ -51,6 +52,21 @@ const refreshAuth = async (refreshToken) => {
   }
 };
 
+const changePassword = async(new_password, old_password, user_id)=> {
+  let user = await userService.getUserById(user_id)
+  let db_password = user.password ? user.password : ""
+  let result = compareSync(old_password, db_password);
+  if (!result) {
+      throw ('Please enter correct old password!');
+  } else {
+      const salt = genSaltSync(10);
+      let password = hashSync(new_password, salt);
+      await userService.updateUserById(user_id, { password: new_password });
+      return "Password Changed"
+  }
+}
+
+
 /**
  * Reset password
  * @param {string} resetPasswordToken
@@ -61,7 +77,7 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
   try {
     const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
     const user = await userService.getUserById(resetPasswordTokenDoc.user);
-    if (!user) {
+   if (!user) {
       throw new Error();
     }
     await userService.updateUserById(user.id, { password: newPassword });
@@ -95,5 +111,6 @@ module.exports = {
   logout,
   refreshAuth,
   resetPassword,
+  changePassword,
   verifyEmail,
 };

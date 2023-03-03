@@ -6,7 +6,6 @@ const logger = require('elogger');
 const mongoose = require('mongoose');
 // const models = require('../models/block.model');
 const  User  = require('../models/user.model');
-console.log("User",User)
 class Block {
   // eslint-disable-next-line camelcase
   constructor(id, data, created_on, precedingHash = 'N/A') {

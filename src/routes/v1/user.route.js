@@ -5,7 +5,7 @@ const userValidation = require('../../validations/user.validation');
 const userController = require('../../controllers/user.controller');
 
 const router = express.Router();
-
+router.post('/userlogin', validate(userValidation.login), userController.login)
 router.post('/', validate(userValidation.createUser), userController.createUser)
 router.get('/', validate(userValidation.getUsers), userController.getUsers);
 
@@ -75,7 +75,7 @@ module.exports = router;
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
  *         $ref: '#/components/responses/Forbidden'
- *
+ * 
  *   get:
  *     summary: Get all users
  *     description: Only admins can retrieve all users.
@@ -141,6 +141,55 @@ module.exports = router;
  *       "403":
  *         $ref: '#/components/responses/Forbidden'
  */
+
+/**
+ * @swagger
+ * /users/userlogin:
+ *   post:
+ *     summary: Login
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *             example:
+ *               email: fake@example.com
+ *               password: password1
+ *     responses:
+ *       "200":
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 tokens:
+ *                   $ref: '#/components/schemas/AuthTokens'
+ *       "401":
+ *         description: Invalid email or password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               code: 401
+ *               message: Invalid email or password
+ */
+
 
 /**
  * @swagger
@@ -245,4 +294,6 @@ module.exports = router;
  *         $ref: '#/components/responses/Forbidden'
  *       "404":
  *         $ref: '#/components/responses/NotFound'
+ * 
+ * 
  */
